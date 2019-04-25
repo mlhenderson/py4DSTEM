@@ -82,6 +82,8 @@ start_ipp_cluster()
 # Get the IP address of our head node
 headIP=$(ip addr show ipogif0 | grep '10\.' | awk '{print $2}' | awk -F'/' '{print $1}')
 
+echo "${SLURM_JOB_ID}" > slurm_jobid
+
 if [ "$DASK" = "1" ]; then
     start_dask_cluster
 else
