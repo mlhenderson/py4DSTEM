@@ -67,12 +67,12 @@ start_ipp_cluster()
   clusterID=cori_${SLURM_JOB_ID}
 
   echo "Launching controller"
-  ipcontroller --ip="$headIP" --cluster-id="$clusterID" --nodb &
+  srun -N 1 --ntasks 1 --exclusive ipcontroller --ip="$headIP" --cluster-id="$clusterID" --nodb &
 
   sleep 20
 
   echo "Launching engines"
-  srun -N $num_nodes --ntasks-per-node=$num_procs ipengine --cluster-id="$clusterID" --work-dir=$SCRATCH
+  srun -N $num_nodes --ntasks-per-node=$num_procs --exclusive ipengine --cluster-id="$clusterID" --work-dir=$SCRATCH
 }
 
 
