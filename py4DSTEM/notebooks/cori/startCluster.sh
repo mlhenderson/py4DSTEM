@@ -49,7 +49,7 @@ start_dask_cluster()
   export HDF5_USE_FILE_LOCKING=FALSE
 
   echo "Launching dask scheduler"
-  dask-scheduler --host "$headIP" --local-directory $SCRATCH --scheduler-file dask_scheduler.json &
+  srun -N 1 --ntasks 1 --exclusive dask-scheduler --host "$headIP" --local-directory $SCRATCH --scheduler-file dask_scheduler.json &
 
   sleep 20
 
