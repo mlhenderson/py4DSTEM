@@ -72,7 +72,7 @@ start_ipp_cluster()
   sleep 20
 
   echo "Launching engines"
-  srun -N $num_nodes --ntasks-per-node=$num_procs --exclusive ipengine --cluster-id="$clusterID" --work-dir=$SCRATCH
+  srun -N $num_nodes --ntasks-per-node=$num_procs --exclusive ipengine --cluster-id="$clusterID" --work-dir=$SCRATCH --EngineFactory.max_heartbeat_misses=0
 }
 
 
