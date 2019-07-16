@@ -240,7 +240,7 @@ def find_Bragg_disks_ipp(datacube, probe,
                 if verbose:
                     print_progress_bar(Rx*datacube.R_Ny+Ry+1, datacube.R_Nx*datacube.R_Ny,
                                        prefix='Analyzing:', suffix='Complete', length=50)
-                DP = datacube.data4D[Rx,Ry,:,:]
+                DP = datacube.data[Rx,Ry,:,:]
                 find_Bragg_disks_single_DP_FK(DP, probe_kernel_FT,
                                               corrPower = corrPower,
                                               sigma = sigma,
@@ -282,9 +282,9 @@ def find_Bragg_disks_ipp(datacube, probe,
         t_01 = time()
         path_to_data = os.path.join(os.path.expandvars("$SCRATCH"), "{}.datacube.npy".format(cluster_id))
         #if not os.path.exists(path_to_data):
-        np.save(path_to_data, datacube.data4D)
+        np.save(path_to_data, datacube.data)
         #h5f = h5py.File(path_to_data, 'w')
-        #h5f.create_dataset('data4d', data=datacube.data4D)
+        #h5f.create_dataset('data4d', data=datacube.data)
         #h5f.close()
         t_datacube_save = time() - t_01
         print("Serialize datacube : {}".format(t_datacube_save))
@@ -314,7 +314,7 @@ def find_Bragg_disks_ipp(datacube, probe,
             
             #path_to_data = os.path.join(os.path.expandvars("$SCRATCH"), "{}.datacube.{}".format(cluster_id, start))
             #with open(path_to_data, 'wb') as outfile:
-            #    pickle.dump([datacube.data4D[x[0],x[1],:,:] for x in indices[start:end]], outfile)
+            #    pickle.dump([datacube.data[x[0],x[1],:,:] for x in indices[start:end]], outfile)
             
             results.append(
                 c[engine].apply(
@@ -431,7 +431,7 @@ def _find_Bragg_disks_dask(datacube, probe,
                 if verbose:
                     print_progress_bar(Rx*datacube.R_Ny+Ry+1, datacube.R_Nx*datacube.R_Ny,
                                        prefix='Analyzing:', suffix='Complete', length=50)
-                DP = datacube.data4D[Rx,Ry,:,:]
+                DP = datacube.data[Rx,Ry,:,:]
                 find_Bragg_disks_single_DP_FK(DP, probe_kernel_FT,
                                               corrPower = corrPower,
                                               sigma = sigma,
@@ -485,7 +485,7 @@ def _find_Bragg_disks_dask(datacube, probe,
             else:
                 end = total
             
-            dyn_inputs_list = [datacube.data4D[x[0],x[1],:,:] for x in indices[start:end]]
+            dyn_inputs_list = [datacube.data[x[0],x[1],:,:] for x in indices[start:end]]
             
             path_to_dynamic_inputs = os.path.join(os.path.expandvars("$SCRATCH"), "{}.inputs_{}".format(dask_client.id, engine))
             with open(path_to_dynamic_inputs, 'wb') as inputs_file:
@@ -539,7 +539,7 @@ def _find_Bragg_disks_dask(datacube, probe,
         #t0 = time()        
         #for Rx in range(datacube.R_Nx):
         #    for Ry in range(datacube.R_Ny):
-        #        DP = datacube.data4D[Rx,Ry,:,:]
+        #        DP = datacube.data[Rx,Ry,:,:]
         #        values.append(
         #            dask_client.submit(_find_Bragg_disks_single_DP_FK, 
         #                DP, probe_kernel_FT, corrPower, sigma, edgeBoundary, 
