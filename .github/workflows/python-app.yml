@@ -46,4 +46,5 @@ jobs:
     - name: Run tutorials
       run: |
         pip install jupyter
+        wget https://drive.google.com/file/d/1PmbCYosA1eYydWmmZebvf6uon9k_5g_S/view?usp=sharing -O data
         jupyter nbconvert --to notebook --execute py4DSTEM_tutorials/notebooks/*.ipynb
