@@ -38,3 +38,11 @@ jobs:
       run: |
         pip install .
         python -c "import py4DSTEM; print(py4DSTEM.__version__)"
+    - name: Checkout tutorials
+      uses: actions/checkout@v3
+      with:
+        repository: py4dstem/py4DSTEM_tutorials
+    - name: Run tutorials
+      run: |
+        pip install jupyter
+        jupyter nbconvert --execute py4DSTEM_tutorials/notebooks/01_py4DSTEM_basics.ipynb
