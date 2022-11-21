@@ -46,4 +46,4 @@ jobs:
     - name: Run tutorials
       run: |
         pip install jupyter
-        jupyter nbconvert --execute py4DSTEM_tutorials/notebooks/01_py4DSTEM_basics.ipynb
+        jupyter nbconvert --to notebook --execute py4DSTEM_tutorials/notebooks/*.ipynb
