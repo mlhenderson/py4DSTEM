@@ -53,14 +53,14 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9"]
     steps:
-    - name: Install test dependencies
-      run: |
-        python -m pip install gdown jupyter
     - name: Checkout tutorials
       uses: actions/checkout@v3
       with:
         repository: mlhenderson/py4DSTEM_tutorials
         path: './py4DSTEM_tutorials'
+    - name: Install tutorial dependencies
+      run: |
+        python -m pip install -r ~./py4DSTEM_tutorials/.binder/requirements.txt
     - name: Cache data files
       id: cache-data
       uses: actions/cache@v3
@@ -110,10 +110,10 @@ jobs:
                                   name = gdown.download(url=download_url, fuzzy=True, output=download_name)
                               else:
                                   name = download_name
-                              downloads[nb_file].append(str(name))
+                              downloads[nb_file].append(name)
 
           with open(os.path.join(data_dir, 'download_file.json'), 'w') as f:
-              json.dump(f, downloads)
+              json.dump(downloads, f)
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
       with:
