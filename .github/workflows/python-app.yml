@@ -121,6 +121,7 @@ jobs:
           import json
           import os
           import re
+          import sys
           import traceback
 
           from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
@@ -178,6 +179,6 @@ jobs:
           print("{} Notebooks ran without errors.".format(len(succeeded)))
           print("{} Notebooks failed with errors".format(len(failed)))
           if len(failed) > 0:
-              return -1
+              sys.exit(-1)
           else:
-              return 0
+              sys.exit(0)
