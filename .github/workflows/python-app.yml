@@ -110,7 +110,7 @@ jobs:
                                   name = gdown.download(url=download_url, fuzzy=True, output=download_name)
                               else:
                                   name = download_name
-                              downloads[nb_file].append(name)
+                              downloads[nb_file].append(str(name))
 
           with open(os.path.join(data_dir, 'download_file.json'), 'w') as f:
               json.dump(f, downloads)
