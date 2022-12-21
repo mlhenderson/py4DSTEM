@@ -82,7 +82,7 @@ jobs:
           from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
           import nbformat
 
-          data_dir = os.path.abspath("~/data")
+          data_dir = os.path.abspath(os.path.expandvars("~/data"))
           if not os.path.exists(data_dir):
               os.mkdir(data_dir)
           notebooks_dir = os.path.abspath("./py4DSTEM_tutorials/notebooks/")
