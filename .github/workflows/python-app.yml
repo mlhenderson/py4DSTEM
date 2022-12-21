@@ -69,7 +69,7 @@ jobs:
       with:
         path: |
           ~/data
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./data/datafiles.json') }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/data/download_files.json') }}
     - if: ${{ steps.cache-data.outputs.cache-hit != 'true' }}
       name: Download tutorial data
       uses: jannekem/run-python-script-action@v1
@@ -84,7 +84,7 @@ jobs:
 
           data_dir = os.path.abspath(os.path.expandvars("~/data"))
           if not os.path.exists(data_dir):
-              os.mkdir(data_dir)
+              os.makedirs(data_dir)
           notebooks_dir = os.path.abspath("./py4DSTEM_tutorials/notebooks/")
           google_url = 'https://drive.google.com'
           downloads = {}
@@ -112,7 +112,7 @@ jobs:
                                   name = download_name
                               downloads[nb_file].append(name)
 
-          with open(os.path.join(data_dir, 'download_file.json'), 'w') as f:
+          with open(os.path.join(data_dir, 'download_files.json'), 'w') as f:
               json.dump(downloads, f)
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
@@ -130,7 +130,7 @@ jobs:
           notebooks_dir = os.path.abspath("./py4DSTEM_tutorials/notebooks/")
           os.chdir(notebooks_dir)
           google_url = 'https://drive.google.com'
-          with open(os.path.join(data_dir, 'download_file.json')) as f:
+          with open(os.path.join(data_dir, 'download_files.json')) as f:
               downloads = json.load(f)
           notebooks = sorted([p.name for p in os.scandir(notebooks_dir) if '.ipynb' in p.name and p.is_file()])
 
