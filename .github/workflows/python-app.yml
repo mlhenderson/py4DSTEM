@@ -16,13 +16,17 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9"]
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+    - name: Set up Python 3
+      uses: actions/setup-python@v4
       with:
-        python-version: "3.8"
+        python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -35,17 +39,139 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test that the module imports
+      id: install
       run: |
         pip install .
         python -c "import py4DSTEM; print(py4DSTEM.__version__)"
+  test:
+
+    needs: build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9"]
+    steps:
     - name: Checkout tutorials
       uses: actions/checkout@v3
       with:
-        repository: py4dstem/py4DSTEM_tutorials
+        repository: mlhenderson/py4DSTEM_tutorials
         path: './py4DSTEM_tutorials'
-    - name: Run tutorials
-      run: |
-        pip install jupyter
-        wget https://drive.google.com/file/d/1PmbCYosA1eYydWmmZebvf6uon9k_5g_S/view?usp=sharing
-        ls -l .
-        jupyter nbconvert --to notebook --execute py4DSTEM_tutorials/notebooks/*.ipynb
+    - name: Cache data files
+      id: cache-data
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/data
+    - if: ${{ steps.cache-data.outputs.cache-hit != 'true' }}
+      name: Download tutorial data
+      uses: jannekem/run-python-script-action@v1
+      with:
+        script: |
+          import json
+          import os
+
+          import gdown
+          from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
+          import nbformat
+
+          data_dir = os.path.abspath("./data")
+          if not os.path.exists(data_dir):
+              os.mkdir(data_dir)
+          notebooks_dir = os.path.abspath("./py4DSTEM_tutorials/notebooks/")
+          google_url = 'https://drive.google.com'
+          downloads = {}
+          notebooks = sorted([p.name for p in os.scandir(notebooks_dir) if '.ipynb' in p.name and p.is_file()])
+
+          for nb_file in notebooks:
+              downloads[nb_file] = []
+
+              print("\tChecking for downloads and hardcoded paths in {}".format(nb_file))
+              with open(nb_file, 'r') as f:
+                  nb = nbformat.read(f, as_version=4)
+                  for i in range(len(nb['cells'])):
+                      text = nb['cells'][i]['source']
+                      if google_url in text:
+                          lines = text.split()
+                          urls = [x.strip() for x in lines if google_url in x]
+                          # download file
+                          print("\tDownloading input files for {}".format(nb_file))
+                          for u in urls:
+                              download_name = os.path.join(data_dir, u.split(']')[0][1:])
+                              download_url = u.split('(')[1][:-1]
+                              if not os.path.exists(download_name):
+                                  name = gdown.download(url=download_url, fuzzy=True, output=download_name)
+                              else:
+                                  name = download_name
+                              downloads[nb_file].append(name)
+
+          with open(os.path.join(data_dir, 'download_file.json'), 'w') as f:
+              json.dump(f, downloads)
+    - name: Run tutorial notebooks
+      uses: jannekem/run-python-script-action@v1
+      with:
+        script: |
+          import json
+          import os
+          import re
+          import traceback
+
+          from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
+          import nbformat
+
+          data_dir = os.path.abspath("./data")
+          notebooks_dir = os.path.abspath("./py4DSTEM_tutorials/notebooks/")
+          os.chdir(notebooks_dir)
+          google_url = 'https://drive.google.com'
+          with open(os.path.join(data_dir, 'download_file.json')) as f:
+              downloads = json.load(f)
+          notebooks = sorted([p.name for p in os.scandir(notebooks_dir) if '.ipynb' in p.name and p.is_file()])
+
+          failed = []
+          succeeded = []
+
+          for nb_file in notebooks:
+              print("Testing {}".format(nb_file))
+              downloads[nb_file] = []
+              changed = False
+
+              print("\tChecking for downloads and hardcoded paths in {}".format(nb_file))
+              with open(nb_file, 'r') as f:
+                  nb = nbformat.read(f, as_version=4)
+                  for i in range(len(nb['cells'])):
+                      text = nb['cells'][i]['source']
+                      if 'file_' in text:
+                          results = re.findall(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)
+                          for r in results:
+                              name_matches = 0
+                              for name in downloads[nb_file]:
+                                  if name in r:
+                                      name_matches += 1
+                                      text = text.replace(r, "{}".format(name))
+                                      changed = True
+                              if name_matches == 0:
+                                  text = text.replace(r, "{}".format(os.path.split(r)[1]))
+                      nb['cells'][i]['source'] = text
+
+                  if changed:
+                      print("\tWriting path updates back to {}".format(nb_file))
+                      with open(nb_file, 'w', encoding='utf-8') as f:
+                          nbformat.write(nb, f)
+
+                  print("\tExecuting {}".format(nb_file))
+                  try:
+                      ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+                      ep.preprocess(nb, {'metadata': {'path': notebooks_dir}})
+                      succeeded.append(nb_file)
+                  except Exception as e:
+                      failed.append(nb_file)
+                      tb = "\n".join(["\t{}".format(line) for line in traceback.format_exc().splitlines()])
+                      print("\n\t{0} {1} {0}\n\n{2}\n\t{0} {1} {0}\n".format("*"*20, nb_file, tb))
+
+          print("{} Notebooks ran without errors.".format(len(succeeded)))
+          print("{} Notebooks failed with errors".format(len(failed)))
+          if len(failed) > 0:
+              return -1
+          else:
+              return 0
