@@ -53,6 +53,16 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9"]
     steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Test that the module imports
+      id: install
+      run: |
+        pip install .
+        python -c "import py4DSTEM; print(py4DSTEM.__version__)"
     - name: Checkout tutorials
       uses: actions/checkout@v3
       with:
