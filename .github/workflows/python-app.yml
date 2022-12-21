@@ -94,7 +94,7 @@ jobs:
               downloads[nb_file] = []
 
               print("\tChecking for downloads and hardcoded paths in {}".format(nb_file))
-              with open(nb_file, 'r') as f:
+              with open(os.path.join(notebooks_dir, nb_file), 'r') as f:
                   nb = nbformat.read(f, as_version=4)
                   for i in range(len(nb['cells'])):
                       text = nb['cells'][i]['source']
