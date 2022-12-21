@@ -127,11 +127,11 @@ jobs:
           from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
           import nbformat
 
-          data_dir = os.path.abspath("./data")
+          data_dir = os.path.abspath(os.path.expandvars("~/data"))
           notebooks_dir = os.path.abspath("./py4DSTEM_tutorials/notebooks/")
           os.chdir(notebooks_dir)
           google_url = 'https://drive.google.com'
-          with open(os.path.join(data_dir, 'download_files.json')) as f:
+          with open(os.path.join(data_dir, 'download_files.json'), 'r') as f:
               downloads = json.load(f)
           notebooks = sorted([p.name for p in os.scandir(notebooks_dir) if '.ipynb' in p.name and p.is_file()])
 
