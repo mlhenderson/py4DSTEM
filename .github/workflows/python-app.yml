@@ -176,7 +176,7 @@ jobs:
                       text = nb['cells'][i]['source']
                       if 'file_' in text:
                           print("Found file_ in {}".format(text))
-                          results = re.finditer(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)
+                          results = [m for m in re.finditer(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)]
                           for r in results:
                               print("matched regex: {}".format(r.group()))
                               name_matches = 0
@@ -185,16 +185,16 @@ jobs:
                                   fname = os.path.split(fpath)[-1]
                                   print("Filename without path: {}".format(fname))
                                   if fname in r.group():
-                                      print("Inserting {}".format(fpath))
+                                      print("Inserting {} into {}".format(fpath, text[r.span()[0]:r.span()[1]]))
                                       name_matches += 1
                                       text = text[:r.span()[0]] + fpath + text[r.span()[1]:]
                                       changed = True
+                                      print('After replacement: {}'.format(text))
                                       break
                               #if name_matches == 0:
                               #    print("no matches, replacing with {}".format(os.path.split(r)[1]))
                               #    text = text.replace(r, "{}".format(os.path.split(r)[1]))
                       nb['cells'][i]['source'] = text
-                      print('After replacements: {}'.format(text))
 
                   if changed:
                       print("\tWriting path updates back to {}".format(nb_file))
