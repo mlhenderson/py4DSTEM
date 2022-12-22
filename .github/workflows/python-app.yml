@@ -115,6 +115,7 @@ jobs:
                           # download file
                           print("\tDownloading input files for {}".format(nb_file))
                           for u in urls:
+                              print(u)
                               download_name = os.path.join(data_dir, u.split(']')[0][1:])
                               download_url = u.split('(')[1][:-1]
                               if not os.path.exists(download_name):
