@@ -166,12 +166,13 @@ jobs:
                           for r in results:
                               print(r)
                               name_matches = 0
-                              for name in downloads[nb_file]:
-                                  print(name)
-                                  if name in r:
-                                      print("Inserting {}".format(name))
+                              for fpath in downloads[nb_file]:
+                                  fname = os.path.split(fpath)[-1]
+                                  print("Filename without path: [}".format(fname))
+                                  if fname in r:
+                                      print("Inserting {}".format(fpath))
                                       name_matches += 1
-                                      text = text.replace(r, "{}".format(name))
+                                      text = text.replace(r, "{}".format(fpath))
                                       changed = True
                               if name_matches == 0:
                                   text = text.replace(r, "{}".format(os.path.split(r)[1]))
