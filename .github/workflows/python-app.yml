@@ -167,6 +167,7 @@ jobs:
                           for r in results:
                               print("matched regex: {}".format(r))
                               name_matches = 0
+                              print("possible filenames to insert: {}".format(downloads[nb_file]))
                               for fpath in downloads[nb_file]:
                                   fname = os.path.split(fpath)[-1]
                                   print("Filename without path: [}".format(fname))
@@ -175,7 +176,9 @@ jobs:
                                       name_matches += 1
                                       text = text.replace(r, "{}".format(fpath))
                                       changed = True
+                                      break
                               if name_matches == 0:
+                                  print("no matches, replacing with {}".format(os.path.split(r)[1]))
                                   text = text.replace(r, "{}".format(os.path.split(r)[1]))
                       nb['cells'][i]['source'] = text
 
