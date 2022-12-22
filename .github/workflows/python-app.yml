@@ -110,20 +110,14 @@ jobs:
                   for i in range(len(nb['cells'])):
                       text = nb['cells'][i]['source']
                       if google_url in text:
-                          print(text)
                           lines = text.split()
                           urls = [x.strip() for x in lines if google_url in x]
                           # download file
                           print("\tDownloading input files for {}".format(nb_file))
                           for u in urls:
-                              print(u)
-                              download_name = os.path.join(data_dir, u.split(']')[0][1:])
                               download_url = u.split('(')[1][:-1]
-                              if not os.path.exists(download_name):
-                                  name = gdown.download(url=download_url, fuzzy=True)
-                              else:
-                                  name = download_name
-                              downloads[nb_file].append(name)
+                              name = gdown.download(url=download_url, fuzzy=True, output=data_dir)
+                              downloads[nb_file].append(os.path.join(data_dir, name))
 
           with open(os.path.join(data_dir, 'download_files.json'), 'w') as f:
               json.dump(downloads, f)
