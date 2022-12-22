@@ -88,6 +88,7 @@ jobs:
         script: |
           import json
           import os
+          import shutil
 
           import gdown
           from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
