@@ -163,18 +163,18 @@ jobs:
                       text = nb['cells'][i]['source']
                       if 'file_' in text:
                           print("Found file_ in {}".format(text))
-                          results = re.findall(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)
+                          results = re.finditer(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)
                           for r in results:
-                              print("matched regex: {}".format(r))
+                              print("matched regex: {}".format(r.group()))
                               name_matches = 0
                               print("possible filenames to insert: {}".format(downloads[nb_file]))
                               for fpath in downloads[nb_file]:
                                   fname = os.path.split(fpath)[-1]
                                   print("Filename without path: {}".format(fname))
-                                  if fname in r:
+                                  if fname in r.group():
                                       print("Inserting {}".format(fpath))
                                       name_matches += 1
-                                      text = text.replace(r, "{}".format(fpath))
+                                      text = text[:r.span()[0]] + fpath + text[r.span()[1]:]
                                       changed = True
                                       break
                               if name_matches == 0:
