@@ -123,9 +123,12 @@ jobs:
                           for u in urls:
                               download_url = u.split('(')[1][:-1]
                               name = gdown.download(url=download_url, fuzzy=True)
-                              destination = os.path.join(data_dir, name)
-                              shutil.move(name, destination)
-                              downloads[nb_file].append(destination)
+                              if name is not None:
+                                  destination = os.path.join(data_dir, name)
+                                  shutil.move(name, destination)
+                                  downloads[nb_file].append(destination)
+                              else:
+                                  print("Unable to download {}".format(download_url))
 
           with open(os.path.join(data_dir, 'download_files.json'), 'w') as f:
               json.dump(downloads, f)
