@@ -116,8 +116,10 @@ jobs:
                           print("\tDownloading input files for {}".format(nb_file))
                           for u in urls:
                               download_url = u.split('(')[1][:-1]
-                              name = gdown.download(url=download_url, fuzzy=True, output=data_dir)
-                              downloads[nb_file].append(os.path.join(data_dir, name))
+                              name = gdown.download(url=download_url, fuzzy=True)
+                              destination = os.path.join(data_dir, name)
+                              shutil.move(name, destination)
+                              downloads[nb_file].append(destination)
 
           with open(os.path.join(data_dir, 'download_files.json'), 'w') as f:
               json.dump(downloads, f)
