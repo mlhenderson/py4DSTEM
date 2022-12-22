@@ -165,7 +165,7 @@ jobs:
                           print("Found file_ in {}".format(text))
                           results = re.findall(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)
                           for r in results:
-                              print(r)
+                              print("matched regex: {}".format(r))
                               name_matches = 0
                               for fpath in downloads[nb_file]:
                                   fname = os.path.split(fpath)[-1]
