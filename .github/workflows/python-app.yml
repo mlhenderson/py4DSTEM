@@ -161,13 +161,13 @@ jobs:
                   nb = nbformat.read(f, as_version=4)
                   for i in range(len(nb['cells'])):
                       text = nb['cells'][i]['source']
-                      print(text)
                       if 'file_' in text:
-                          print(text)
                           results = re.findall(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)
                           for r in results:
+                              print(r)
                               name_matches = 0
                               for name in downloads[nb_file]:
+                                  print(name)
                                   if name in r:
                                       print("Inserting {}".format(name))
                                       name_matches += 1
