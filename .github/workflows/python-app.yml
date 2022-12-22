@@ -210,6 +210,6 @@ jobs:
           print("{} Notebooks ran without errors.".format(len(succeeded)))
           print("{} Notebooks failed with errors".format(len(failed)))
           if len(failed) > 0:
-              sys.exit(-1)
+              sys.exit(1)
           else:
               sys.exit(0)
