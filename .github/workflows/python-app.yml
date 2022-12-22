@@ -170,7 +170,7 @@ jobs:
                               print("possible filenames to insert: {}".format(downloads[nb_file]))
                               for fpath in downloads[nb_file]:
                                   fname = os.path.split(fpath)[-1]
-                                  print("Filename without path: [}".format(fname))
+                                  print("Filename without path: {}".format(fname))
                                   if fname in r:
                                       print("Inserting {}".format(fpath))
                                       name_matches += 1
