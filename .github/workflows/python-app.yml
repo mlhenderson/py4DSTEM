@@ -142,7 +142,6 @@ jobs:
               sys.exit(1)
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
-      continue-on-error: true
       with:
         script: |
           import json
