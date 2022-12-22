@@ -122,6 +122,7 @@ jobs:
           with open(os.path.join(data_dir, 'download_files.json'), 'w') as f:
               json.dump(downloads, f)
               print(json.dumps(downloads))
+          print(os.listdir(data_dir))
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
       with:
