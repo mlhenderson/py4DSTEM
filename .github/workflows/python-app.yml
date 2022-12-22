@@ -12,15 +12,18 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        python-version: ["3.8", "3.9"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3
@@ -51,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3
@@ -84,6 +87,7 @@ jobs:
     - if: ${{ steps.cache-data.outputs.cache-hit != 'true' }}
       name: Download tutorial data
       uses: jannekem/run-python-script-action@v1
+      continue-on-error: true
       with:
         script: |
           import json
@@ -128,6 +132,7 @@ jobs:
           print(os.listdir(data_dir))
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
+      continue-on-error: true
       with:
         script: |
           import json
