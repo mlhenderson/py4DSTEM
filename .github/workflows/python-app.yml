@@ -125,6 +125,7 @@ jobs:
 
           with open(os.path.join(data_dir, 'download_files.json'), 'w') as f:
               json.dump(downloads, f)
+              print(json.dumps(downloads))
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
       with:
@@ -144,6 +145,7 @@ jobs:
           google_url = 'https://drive.google.com'
           with open(os.path.join(data_dir, 'download_files.json'), 'r') as f:
               downloads = json.load(f)
+              print(downloads)
           notebooks = sorted([p.name for p in os.scandir(notebooks_dir) if '.ipynb' in p.name and p.is_file()])
 
           failed = []
@@ -165,6 +167,7 @@ jobs:
                               name_matches = 0
                               for name in downloads[nb_file]:
                                   if name in r:
+                                      print("Inserting {}".format(name))
                                       name_matches += 1
                                       text = text.replace(r, "{}".format(name))
                                       changed = True
