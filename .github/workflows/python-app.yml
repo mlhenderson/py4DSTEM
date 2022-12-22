@@ -162,6 +162,7 @@ jobs:
                   for i in range(len(nb['cells'])):
                       text = nb['cells'][i]['source']
                       if 'file_' in text:
+                          print("Found file_ in {}".format(text))
                           results = re.findall(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)
                           for r in results:
                               print(r)
