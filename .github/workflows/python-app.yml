@@ -106,6 +106,7 @@ jobs:
           google_url = 'https://drive.google.com'
           downloads = {}
           notebooks = sorted([p.name for p in os.scandir(notebooks_dir) if '.ipynb' in p.name and p.is_file()])
+          failures = 0
 
           for nb_file in notebooks:
               downloads[nb_file] = []
@@ -129,11 +130,16 @@ jobs:
                                   downloads[nb_file].append(destination)
                               else:
                                   print("Unable to download {}".format(download_url))
+                                  failures += 1
 
           with open(os.path.join(data_dir, 'download_files.json'), 'w') as f:
               json.dump(downloads, f)
               print(json.dumps(downloads))
           print(os.listdir(data_dir))
+
+          if failures > 0:
+              import sys
+              sys.exit(1)
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
       continue-on-error: true
@@ -142,7 +148,6 @@ jobs:
           import json
           import os
           import re
-          import sys
           import traceback
 
           from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
@@ -210,6 +215,5 @@ jobs:
           print("{} Notebooks ran without errors.".format(len(succeeded)))
           print("{} Notebooks failed with errors".format(len(failed)))
           if len(failed) > 0:
+              import sys
               sys.exit(1)
-          else:
-              sys.exit(0)
