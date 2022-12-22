@@ -153,6 +153,7 @@ jobs:
 
           for nb_file in notebooks:
               print("Testing {}".format(nb_file))
+              print("{} in downloads: {}".format(nb_file, nbfile in downloads))
               downloads[nb_file] = []
               changed = False
 
