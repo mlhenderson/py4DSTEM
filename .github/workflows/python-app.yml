@@ -177,10 +177,11 @@ jobs:
                                       text = text[:r.span()[0]] + fpath + text[r.span()[1]:]
                                       changed = True
                                       break
-                              if name_matches == 0:
-                                  print("no matches, replacing with {}".format(os.path.split(r)[1]))
-                                  text = text.replace(r, "{}".format(os.path.split(r)[1]))
+                              #if name_matches == 0:
+                              #    print("no matches, replacing with {}".format(os.path.split(r)[1]))
+                              #    text = text.replace(r, "{}".format(os.path.split(r)[1]))
                       nb['cells'][i]['source'] = text
+                      print('After replacements: {}'.format(text))
 
                   if changed:
                       print("\tWriting path updates back to {}".format(nb_file))
