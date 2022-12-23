@@ -212,6 +212,7 @@ jobs:
                   nb = nbformat.read(f, as_version=4)
                   for i in range(len(nb['cells'])):
                       text = nb['cells'][i]['source']
+                      replaced_text = ""
                       if 'file_' in text:
                           print("Found file_ in {}".format(text))
                           results = [m for m in re.finditer(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)]
@@ -223,15 +224,16 @@ jobs:
                                   fname = os.path.split(fpath)[-1]
                                   print("Filename without path: {}".format(fname))
                                   if fname in r.group():
-                                      print("Inserting {} into {}".format(fpath, text[r.span()[0]:r.span()[1]+1]))
+                                      parts = r.group().split('=')
+                                      replacement = parts[0] + '=' + filepath
+                                      print("Inserting {} into {}".format(
+                                          fpath,
+                                          replacement))
                                       name_matches += 1
-                                      text = text[:r.span()[0]] + fpath + text[r.span()[1]+1:]
+                                      text = text.replace(r.group(), replacement)
                                       changed = True
                                       print('After replacement: {}'.format(text))
                                       break
-                              #if name_matches == 0:
-                              #    print("no matches, replacing with {}".format(os.path.split(r)[1]))
-                              #    text = text.replace(r, "{}".format(os.path.split(r)[1]))
                       nb['cells'][i]['source'] = text
 
                   if changed:
