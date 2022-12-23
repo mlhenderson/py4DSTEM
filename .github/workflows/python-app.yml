@@ -172,8 +172,6 @@ jobs:
         python -m pip install "jedi==0.17.2" "dask[complete]" pymatgen gdown jupyter
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
-      env:
-        data_dir: ${{ needs.cache.cache-data.path }}
       with:
         script: |
           import json
@@ -184,7 +182,7 @@ jobs:
           from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
           import nbformat
 
-          data_dir = os.path.abspath(os.environment["data_dir"])
+          data_dir = os.path.abspath("data")
 
           print("{}: {}".format(data_dir, os.listdir(data_dir)))
 
