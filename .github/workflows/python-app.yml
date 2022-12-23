@@ -142,7 +142,7 @@ jobs:
 
   test:
 
-    needs: []build, cache]
+    needs: [build, cache]
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
