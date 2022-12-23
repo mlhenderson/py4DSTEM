@@ -168,6 +168,13 @@ jobs:
       run: |
         python -m pip install .
         python -m pip install "jedi==0.17.2" "dask[complete]" pymatgen gdown jupyter
+    - name: Get cached data files
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-data
+      with:
+        path: data
+        key: ${{ env.cache-name }}-${{ hashFiles('data/download_files.json') }}
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
       with:
