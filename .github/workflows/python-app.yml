@@ -174,7 +174,7 @@ jobs:
         cache-name: cache-data
       with:
         path: data
-        key: ${{ env.cache-name }}-${{ hashFiles('data/download_files.json') }}
+        key: ${{ env.cache-name }}-${{ hashFiles('./py4DSTEM_tutorials/**/.ipynb') }}
     - name: Run tutorial notebooks
       uses: jannekem/run-python-script-action@v1
       with:
