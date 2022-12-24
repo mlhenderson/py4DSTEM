@@ -215,7 +215,7 @@ jobs:
                       replaced_text = ""
                       if 'file_' in text:
                           print("Found file_ in {}".format(text))
-                          results = [m for m in re.finditer(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]\s*', text)]
+                          results = [m for m in re.finditer(r'file_\w+\s*=\s*[r]?[\'\"](.*)[\'\"]', text)]
                           for r in results:
                               print("matched regex: {}".format(r.group()))
                               name_matches = 0
@@ -225,7 +225,7 @@ jobs:
                                   print("Filename without path: {}".format(fname))
                                   if fname in r.group():
                                       parts = r.group().split('=')
-                                      replacement = parts[0] + '=' + fpath
+                                      replacement = "{} = '{}'".format(parts[0], fpath)
                                       print("Inserting {} into {}".format(
                                           fpath,
                                           replacement))
