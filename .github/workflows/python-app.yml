@@ -82,7 +82,7 @@ jobs:
         cache-name: cache-data
       with:
         path: data
-        key: ${{ env.cache-name }}-${{ hashFiles('data/download_files.json') }}
+        key: ${{ env.cache-name }}-${{ hashFiles('./py4DSTEM_tutorials/**/.ipynb') }}
     - if: ${{ steps.cache-data.outputs.cache-hit != 'true' }}
       name: Download tutorial data
       uses: jannekem/run-python-script-action@v1
