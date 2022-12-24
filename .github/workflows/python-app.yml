@@ -225,7 +225,7 @@ jobs:
                                   print("Filename without path: {}".format(fname))
                                   if fname in r.group():
                                       parts = r.group().split('=')
-                                      replacement = parts[0] + '=' + filepath
+                                      replacement = parts[0] + '=' + fpath
                                       print("Inserting {} into {}".format(
                                           fpath,
                                           replacement))
