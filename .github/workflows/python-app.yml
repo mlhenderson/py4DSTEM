@@ -70,7 +70,7 @@ jobs:
     - name: Checkout tutorials
       uses: actions/checkout@v3
       with:
-        repository: mlhenderson/py4DSTEM_tutorials
+        repository: py4DSTEM/py4DSTEM_tutorials
         path: './py4DSTEM_tutorials'
     - name: Install download dependencies
       run: |
@@ -162,7 +162,7 @@ jobs:
     - name: Checkout tutorials
       uses: actions/checkout@v3
       with:
-        repository: mlhenderson/py4DSTEM_tutorials
+        repository: py4DSTEM/py4DSTEM_tutorials
         path: './py4DSTEM_tutorials'
     - name: Install tutorial dependencies
       run: |
